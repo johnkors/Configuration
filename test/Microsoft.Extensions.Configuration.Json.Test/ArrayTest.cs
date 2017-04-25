@@ -229,5 +229,22 @@ namespace Microsoft.Extensions.Configuration.Json.Test
             Assert.Equal("bob", indexConfigurationSections[4].Key);
             Assert.Equal("hello", indexConfigurationSections[5].Key);
         }
+
+        [Fact]
+        public void ArrayGetsValuesRegardlessofCasing()
+        {
+            var json = @"{
+                'fooBar': [ 'foo', 'bar' ]
+            }";
+
+            var jsonConfigSource = new JsonConfigurationProvider(new JsonConfigurationSource());
+            jsonConfigSource.Load(TestStreamHelpers.StringToStream(json));
+
+            Assert.Equal("foo", jsonConfigSource.Get("fooBar:0"));
+            Assert.Equal("bar", jsonConfigSource.Get("fooBar:1"));
+
+            Assert.Equal("foo", jsonConfigSource.Get("FooBar:0"));
+            Assert.Equal("bar", jsonConfigSource.Get("FooBar:1"));
+        }
     }
 }

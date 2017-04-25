@@ -89,6 +89,41 @@ i=ini_i.i.i.i
             Assert.Equal("xml_x.x.x.x", config["address:x"]);
         }
 
+        [Fact]
+        public void CasingMatters()
+        {
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile(_json1ConfigFilePath);
+            
+            var config = configurationBuilder.Build();
+            var myOptionsUpperCase = new MyOptionsUpperCase();
+            var myOptionsLowerCase = new MyOptionsLowerCase();
+            config.Bind(myOptionsUpperCase);
+            config.Bind(myOptionsLowerCase);
+ 
+            Assert.Equal(3, myOptionsUpperCase.Address.Length);
+            Assert.Equal("json_0.0.0.0", myOptionsUpperCase.Address[0]);
+            Assert.Equal("json_1.1.1.1", myOptionsUpperCase.Address[1]);
+            Assert.Equal("json_2.2.2.2", myOptionsUpperCase.Address[2]);
+
+            Assert.Equal(3, myOptionsLowerCase.address.Length);
+            Assert.Equal("json_0.0.0.0", myOptionsLowerCase.address[0]);
+            Assert.Equal("json_1.1.1.1", myOptionsLowerCase.address[1]);
+            Assert.Equal("json_2.2.2.2", myOptionsLowerCase.address[2]);
+        }
+
+        public class MyOptionsUpperCase
+        {
+            public String Add { get; set; }
+            public String[] Address { get; set; }
+        }
+
+        public class MyOptionsLowerCase
+        {
+            public String add { get; set; }
+            public String[] address { get; set; }
+        }
+
         private IConfiguration BuildConfig()
         {
             var configurationBuilder = new ConfigurationBuilder();
